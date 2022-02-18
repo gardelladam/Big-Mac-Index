@@ -7,7 +7,11 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "d3": "^7.3.0",
+<<<<<<< HEAD
     "leaflet": "^1.7.1",
+=======
+    "d3-scale": "^4.0.2",
+>>>>>>> 2b1f14c9 (Barchart done)
     "papaparse": "^5.3.1",
     "react": "^17.0.2",
     "react-d3-library": "^1.1.8",
