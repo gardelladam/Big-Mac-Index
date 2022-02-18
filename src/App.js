@@ -1,29 +1,39 @@
-import logo from './logo.svg';
 import './App.css';
-import d3 from 'react-d3-library';
+import * as d3 from 'd3';
+import * as React from "react";
+import importedData from './Data/big-mac-full-index.csv'
+
+import MyMap from './components/MyMap.js';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
+
+    const [data, setData] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+    
+    
+
+    //console.log(mapData);
+  const handleCallback = (childData) =>{
+  
+        console.log(childData);
+        //data = data.filter(function(d){return d.iso_a3 === childData;})
         
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-          
-        </a>
-        
-      </header>
-    </div>
-  );
+  }
+
+   React.useEffect(() => { 
+
+    d3.csv(importedData).then((d) => {
+      setData(d);
+      setLoading(false);
+    });
+    
+  }, []);
+
+  if(loading){
+     return <div>Loading your position...</div>
+  }
+  return (<MyMap data = {data} parentCallback = {handleCallback}/>)
+  
 }
 
 export default App;
