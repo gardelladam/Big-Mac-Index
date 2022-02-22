@@ -1,8 +1,13 @@
 .App {
+  background-color: #171d2b;
   text-align: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  align-items: center;
+  justify-content: center;
 }
 
-.App-logo {
+/* .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
@@ -22,17 +27,37 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+} */
+
+.Context {
+  background-color: #171d2b;
+  height: 100vh;
+  flex-direction: column;
 }
 
-.App-link {
-  color: #61dafb;
+.Row {
+  display: flex;
+  height: 60%;
+  flex: 1;
+  flex-direction: row;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Map {
+  background-color: #a4b4d6;
+  padding: 20px;
+  flex: 8;
+}
+
+.Dashboard {
+  background-color: #95e2ac;
+  padding: 20px;
+  flex: 3;
+  flex-direction: column;
+}
+
+.BarChart {
+  background-color: #e9a7d8;
+  height: 40%;
+  padding: 20px;
+  flex: 1;
 }
