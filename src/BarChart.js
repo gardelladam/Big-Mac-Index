@@ -6,11 +6,11 @@ function BarChart({ data }) {
   const ref = useD3(
     (svg) => {
       const height = 500;
-      const width = 1500;
+      const width = 2400;
       const margin = { top: 20, right: 30, bottom: 30, left: 40 };
  //data = data.filter(function(d){return d.iso_a3 === "NOR";})
 
- var format = d3.timeFormat("%Y");
+ var format = d3.timeFormat("%Y-%b");
 var mindate = d3.min(data, (d) => d.date);
 var maxdate =  d3.max(data, (d) => d.date);
 console.log(mindate);
@@ -23,11 +23,12 @@ console.log(maxdate);
 
       const y1 = d3
         .scaleLinear()
-        .domain([d3.min(data, (d) => d.USD_adjusted), d3.max(data, (d) => d.USD_adjusted)])
+        .domain([-1, 1])
         .rangeRound([height - margin.bottom, margin.top]);
 
         const xAxis = g => g
         .attr('transform', `translate(0,${height - margin.bottom})`)
+        .style("font-size", "13px")
         .call(
           axisBottom(x)
             // Use the player names from the data
@@ -39,7 +40,8 @@ console.log(maxdate);
       const y1Axis = (g) =>
         g
           .attr("transform", `translate(${margin.left},0)`)
-          .style("color", "steelblue")
+          .style("color", "black")
+          .style("font-size", "16px")
           .call(d3.axisLeft(y1).ticks(null, "s"))
           .call((g) => g.select(".domain").remove())
           .call((g) =>
@@ -57,15 +59,23 @@ console.log(maxdate);
 
       svg
         .select(".plot-area")
-        .attr("fill", "steelblue")
         .selectAll(".bar")
         .data(data)
         .join("rect")
         .attr("class", "bar")
+        .attr("fill", function (d) {
+          console.log(d.USD_raw);
+          if(d.USD_raw > 0){
+            return "steelblue";
+          }
+          else{
+            return "red";
+          }
+         })
         .attr("x", (d) => x(d.date))
         .attr("width", x.bandwidth())
-        .attr("y", (d) => y1(d.USD_adjusted))
-        .attr("height", (d) => y1(0) - y1(d.USD_adjusted));
+        .attr("y", (d) => y1(Math.max(0, d.USD_raw)))
+        .attr("height", (d) => Math.abs(y1(d.USD_raw) - y1(0)));
     },
     [data.length]
   );
