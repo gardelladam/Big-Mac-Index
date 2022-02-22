@@ -5,7 +5,7 @@ import { axisBottom } from 'd3-axis';
 function BarChart({ data }) {
   const ref = useD3(
     (svg) => {
-      const height = 500;
+      const height = 400;
       const width = 2400;
       const margin = { top: 20, right: 30, bottom: 30, left: 40 };
  //data = data.filter(function(d){return d.iso_a3 === "NOR";})
@@ -84,7 +84,7 @@ console.log(maxdate);
     <svg
       ref={ref}
       style={{
-        height: 500,
+        height: 400,
         width: "100%",
         marginRight: "0px",
         marginLeft: "0px",

@@ -1,8 +1,13 @@
 import React, { Component, useState, useEffect } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import d3 from 'react-d3-library';
 import styled from 'styled-components';
+import * as d3 from 'd3';
+import importedData from './Data/big-mac-full-index.csv'
+
+import BarChart from './BarChart.js';
+import MyMap from './components/MyMap.js';
+
 
 const Button = styled.button`
   background-color: white;
@@ -72,6 +77,7 @@ function ToggleSlider() {
   <div className="slider-parent">
   <input type="range" min={0} max={dates.length-1} value={value}
      onChange={({ target: { value: radius } }) => {
+                  
                 onChange(radius);
               }}
   />
@@ -93,14 +99,45 @@ function ToggleSlider() {
 //   )
 // }
 
-export class Interface extends Component{
+function Interface(){
+  const [data, setData] = React.useState([]);
+    const [barchartData, setbarchartData] = React.useState([]);
+    const [loadingbar, setLoadingbar] = React.useState(true);
+    const [loading, setLoading] = React.useState(true);
+    const [dates, setDates] = React.useState([]);
+    
+    
 
-render() {
+  const handleCallback = (childData) =>{
+        setLoadingbar(true);
+
+          setbarchartData(data.filter(function(d){return d.iso_a3 === childData;}));
+          console.log(data.filter(function(d){return d.iso_a3 === childData;}));
+        
+        
+        setLoadingbar(false);
+  }
+
+   React.useEffect(() => { 
+    var parseTime = d3.timeParse('%Y-%m-%d');
+    d3.csv(importedData).then((d) => {
+      d.forEach(function (d) {
+        d.date = parseTime(d.date);	
+      });
+      setData(d);
+      setLoading(false);
+    });
+    
+  }, []);
+
   return (
         <div className = "Context" fluid = {"true"}>
               <div className = "Row">
                 <div className = "Map">
-                1
+                {loading
+        ? <div/>
+        : <MyMap data = {data} parentCallback = {handleCallback}/>
+      }
                 </div>
                 <div className = "Dashboard">
                   2
@@ -111,8 +148,12 @@ render() {
                 </div>
               </div>
               <div className = "BarChart">
-                    3
+              {loadingbar || barchartData.length === 0
+        ? <div/>
+        :  <BarChart data = {barchartData}/>
+      }
               </div>
         </div>
   );
-}}
+}
+export default Interface;
