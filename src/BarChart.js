@@ -5,8 +5,8 @@ import { axisBottom } from 'd3-axis';
 function BarChart({ data }) {
   const ref = useD3(
     (svg) => {
-      const height = 400;
-      const width = 2400;
+      const height = 350;
+      const width = 1900;
       const margin = { top: 20, right: 30, bottom: 30, left: 40 };
  //data = data.filter(function(d){return d.iso_a3 === "NOR";})
 
@@ -28,7 +28,7 @@ console.log(maxdate);
 
         const xAxis = g => g
         .attr('transform', `translate(0,${height - margin.bottom})`)
-        .style("font-size", "13px")
+        .style("font-size", "11px")
         .call(
           axisBottom(x)
             // Use the player names from the data
@@ -84,7 +84,7 @@ console.log(maxdate);
     <svg
       ref={ref}
       style={{
-        height: 400,
+        height: 350,
         width: "100%",
         marginRight: "0px",
         marginLeft: "0px",

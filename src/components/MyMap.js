@@ -18,7 +18,7 @@ class MyMap extends Component {
     fillColor: "grey",
     fillOpacity: 1,
     color: "black",
-    weight: 2,
+    weight: 1,
   };
 
   setIso = (parameter) => (event) => {
@@ -66,7 +66,7 @@ class MyMap extends Component {
     return (
       <div>
         <h1 style={{ textAlign: "center" }}>My Map</h1>
-        <MapContainer  style={{ width: "150vh", height: "50vh", background: "transparent"}} zoom={2} zoomControl={false} dragging={!this.state.smallScreen} doubleClickZoom={false} center={[20, 10]}>
+        <MapContainer  style={{ width: "134vh", height: "52vh", background: "transparent"}} zoom={2} zoomControl={false} dragging={!this.state.smallScreen} doubleClickZoom={false} center={[20, 10]}>
           <GeoJSON
             style={this.countryStyle}
             data={mapData.features}
