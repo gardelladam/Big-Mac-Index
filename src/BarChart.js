@@ -8,12 +8,9 @@ function BarChart({ data }) {
       const height = 500;
       const width = 1500;
       const margin = { top: 20, right: 30, bottom: 30, left: 40 };
- data = data.filter(function(d){return d.iso_a3 === "NOR";})
- var parseTime = d3.timeParse('%Y-%m-%d');
+ //data = data.filter(function(d){return d.iso_a3 === "NOR";})
+
  var format = d3.timeFormat("%Y");
- data.forEach(function (d) {
-  d.date = parseTime(d.date);	
-});
 var mindate = d3.min(data, (d) => d.date);
 var maxdate =  d3.max(data, (d) => d.date);
 console.log(mindate);
