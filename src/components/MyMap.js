@@ -8,11 +8,7 @@ import * as d3 from 'd3';
 class MyMap extends Component {
   state = { color: "#ffff00", data1: []};
 
-
   colors = ["green", "blue", "yellow", "orange", "grey"];
-
-  
-
 
   componentDidMount() {
 
@@ -70,7 +66,7 @@ class MyMap extends Component {
     return (
       <div>
         <h1 style={{ textAlign: "center" }}>My Map</h1>
-        <MapContainer style={{ height: "80vh" }} zoom={2} center={[20, 100]}>
+        <MapContainer  style={{ width: "150vh", height: "80vh" }} zoom={2} zoomControl={false} dragging={!this.state.smallScreen} doubleClickZoom={false} center={[20, 10]}>
           <GeoJSON
             style={this.countryStyle}
             data={mapData.features}
