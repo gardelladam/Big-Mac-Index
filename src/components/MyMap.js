@@ -9,8 +9,12 @@ class MyMap extends Component {
   state = { color: "#ffff00", data1: []};
 
   colors = ["green", "blue", "yellow", "orange", "grey"];
+  EU_countries = ["AUT","BEL", "CYP", "EST", "FIN", "FRA", "DEU", "GRC", "IRL", "ITA", "LVA", "LTU", "LUX", "MLT", "NLD", "PRT", "SVK", "SVN", "ESP"];
+
+  EU_zone = this.props.data.filter(function(d){return d.iso_a3 === "EUZ";})
 
   componentDidMount() {
+    console.log(this.EU_zone);
 
   }
 
@@ -22,7 +26,12 @@ class MyMap extends Component {
   };
 
   setIso = (parameter) => (event) => {
+    if(this.EU_countries.includes(parameter)){
+      this.props.parentCallback("EUZ");
+    }
+    else{
     this.props.parentCallback(parameter);
+    }
   };
 
 
@@ -33,8 +42,22 @@ class MyMap extends Component {
     //console.log(countryName);
     layer.bindPopup(countryName);
 
+    if(this.EU_countries.includes(countryCode)){
+      
+      if(this.EU_zone[12].USD_raw > 0){
+        layer.options.fillColor = "green";
+        layer.options.fillOpacity = this.EU_zone[12].USD_raw;
+      }
+      else if(this.EU_zone[12].USD_raw < 0){
+          layer.options.fillColor = "red";
+          layer.options.fillOpacity = this.EU_zone[12].USD_raw;
+        }
+      
+    }
+    else{
+
     for(var i = 0; i < this.props.data.length; i ++){
-      if(this.props.data[i].iso_a3 == countryCode){
+      if(this.props.data[i].iso_a3 === countryCode){
         if(this.props.data[i].USD_raw > 0){
           layer.options.fillColor = "green";
           layer.options.fillOpacity = this.props.data[i].USD_raw;
@@ -46,17 +69,19 @@ class MyMap extends Component {
         else{
          
           layer.options.fillOpacity = 0;
+          layer.options.color = "#1936F6";
+           layer.options.weight = 3;
         }
         
       }
     } 
+    }
 
     //layer.options.fillOpacity = Math.random(); //0-1 (0.1, 0.2, 0.3)
     // const colorIndex = Math.floor(Math.random() * this.colors.length);
     // layer.options.fillColor = this.colors[colorIndex]; //0
 
     layer.on({
-  
       click: this.setIso(countryCode),
     });
   };
