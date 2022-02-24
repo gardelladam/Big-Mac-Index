@@ -1,13 +1,14 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState,useCallback, useEffect } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
 import * as d3 from 'd3';
 import importedData from './Data/big-mac-full-index.csv'
-
+import Slider from '@material-ui/core/Slider';
 import BarChart from './BarChart.js';
 import MyMap from './components/MyMap.js';
-
+import ToggleSlider from './components/Slider.js';
+import debounce from 'lodash.debounce';
 
 const Button = styled.button`
   background-color: white;
@@ -69,23 +70,7 @@ function ToggleDropDown() {
     </form> );
 }
 
-function ToggleSlider() {
-  const dates = ["2001-04", "2001-05", "2005-05", "2005-08", "2006-02", "2008-06"];
-  const [value,onChange] = useState(0);
 
-  return(
-  <div className="slider-parent">
-  <input type="range" min={0} max={dates.length-1} value={value}
-     onChange={({ target: { value: radius } }) => {
-                  
-                onChange(radius);
-              }}
-  />
-  <div className="buble"> 
-  {dates[value]}
-  </div>
-</div>);
-}
 
 // function MyForm() {
 //   return (
@@ -99,36 +84,41 @@ function ToggleSlider() {
 //   )
 // }
 
-function Interface(){
-  const [data, setData] = React.useState([]);
+function Interface(props){
+
     const [barchartData, setbarchartData] = React.useState([]);
     const [loadingbar, setLoadingbar] = React.useState(true);
     const [loading, setLoading] = React.useState(true);
-    const [dates, setDates] = React.useState([]);
+    const [mapData, setMapData] = React.useState([]);
     
-    
+    const handleCallbackSlider = (childData) =>
+    {
+      setLoading(true);
+      var parseTime = d3.timeParse('%Y-%m-%d');
+      console.log(props.data.filter(function(d){return d.date.getTime() === parseTime(childData).getTime()}));
+      setMapData(props.data.filter(function(d){return d.date.getTime() === parseTime(childData).getTime()}));
+      setLoading(false);
+     }
 
   const handleCallback = (childData) =>{
         setLoadingbar(true);
-
-          setbarchartData(data.filter(function(d){return d.iso_a3 === childData;}));
-          console.log(data.filter(function(d){return d.iso_a3 === childData;}));
-        
-        
+        setbarchartData(props.data.filter(function(d){return d.iso_a3 === childData;}));
+        //console.log(props.Setdata.filter(function(d){return d.iso_a3 === childData;}));
         setLoadingbar(false);
   }
 
    React.useEffect(() => { 
-    var parseTime = d3.timeParse('%Y-%m-%d');
     d3.csv(importedData).then((d) => {
-      d.forEach(function (d) {
-        d.date = parseTime(d.date);	
-      });
-      setData(d);
+      setMapData(d);
       setLoading(false);
     });
     
   }, []);
+
+
+
+
+
 
   return (
         <div className = "Context" fluid = {"true"}>
@@ -136,14 +126,14 @@ function Interface(){
                 <div className = "Map">
                 {loading
         ? <div/>
-        : <MyMap data = {data} parentCallback = {handleCallback}/>
+        : <MyMap data = {mapData} parentCallback = {handleCallback}/>
       }
                 </div>
                 <div className = "Dashboard">
                   2
                   <ToggleGroupedButtons/> 
                   <ToggleDropDown/>
-                  <ToggleSlider/>
+                  <ToggleSlider dates={props.dates} callback={handleCallbackSlider}/>
                   {/* <MyForm/> */}
                 </div>
               </div>

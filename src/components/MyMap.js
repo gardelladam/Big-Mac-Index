@@ -43,14 +43,14 @@ class MyMap extends Component {
     layer.bindPopup(countryName);
 
     if(this.EU_countries.includes(countryCode)){
-      
-      if(this.EU_zone[12].USD_raw > 0){
+      console.log(this.EU_zone[0].USD_raw);
+      if(this.EU_zone[0].USD_raw > 0){
         layer.options.fillColor = "green";
-        layer.options.fillOpacity = this.EU_zone[12].USD_raw;
+        layer.options.fillOpacity = this.EU_zone[0].USD_raw;
       }
-      else if(this.EU_zone[12].USD_raw < 0){
+      else if(this.EU_zone[0].USD_raw < 0){
           layer.options.fillColor = "red";
-          layer.options.fillOpacity = this.EU_zone[12].USD_raw;
+          layer.options.fillOpacity = this.EU_zone[0].USD_raw;
         }
       
     }
