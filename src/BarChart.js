@@ -1,7 +1,13 @@
+import './App.css';
 import { useD3 } from './hooks/useD3';
 import React from 'react';
 import * as d3 from 'd3';
 import { axisBottom } from 'd3-axis';
+import { select, mouse } from 'd3-selection';
+import d3Tip from "d3-tip";
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+
 function BarChart({ data }) {
   const ref = useD3(
     (svg) => {
@@ -10,9 +16,12 @@ function BarChart({ data }) {
       const margin = { top: 20, right: 30, bottom: 30, left: 40 };
  //data = data.filter(function(d){return d.iso_a3 === "NOR";})
 
- var format = d3.timeFormat("%Y-%b");
+
+var format = d3.timeFormat("%Y-%b");
 var mindate = d3.min(data, (d) => d.date);
 var maxdate =  d3.max(data, (d) => d.date);
+var currentColor;
+var currentVal;
 console.log(mindate);
 console.log(maxdate);
       const x = d3
@@ -57,6 +66,35 @@ console.log(maxdate);
       svg.select(".x-axis").call(xAxis);
       svg.select(".y-axis").call(y1Axis);
 
+        var tip = d3Tip()
+        .attr('class', 'd3-tip')
+        .offset([-50, 0])
+        .html(function(d) {
+          return "<strong>Value:</strong> <span style='color:red'>" + currentVal + "</span>";
+        })
+
+        svg.call(tip);
+
+      function sMouseOver(d) {
+        d3.select(this).style("fill", function (d) {
+          currentColor = d.USD_raw > 0 ? "blue" : "darkred";
+          console.log(currentColor);
+          currentVal = d.USD_raw;
+          return currentColor;
+         });
+        tip.show(d, this)
+      };
+
+      function sMouseOut(d) {
+        // currentColor = currentColor == "darkred" ? "red" : "steelblue";
+        d3.select(this).style("fill", function (d) {
+          currentColor = d.USD_raw > 0 ? "steelblue" : "red";
+          console.log(currentColor);
+          return currentColor
+         });
+        tip.hide(d, this)	  
+      };
+
       svg
         .select(".plot-area")
         .selectAll(".bar")
@@ -66,16 +104,29 @@ console.log(maxdate);
         .attr("fill", function (d) {
           console.log(d.USD_raw);
           if(d.USD_raw > 0){
-            return "steelblue";
+            currentColor = "steelblue"
+            return currentColor;
           }
           else{
-            return "red";
+            currentColor = "red"
+            return currentColor;
           }
          })
         .attr("x", (d) => x(d.date))
         .attr("width", x.bandwidth())
         .attr("y", (d) => y1(Math.max(0, d.USD_raw)))
-        .attr("height", (d) => Math.abs(y1(d.USD_raw) - y1(0)));
+        .attr("height", (d) => Math.abs(y1(d.USD_raw) - y1(0)))
+        .on('mouseover', sMouseOver)
+        .on('mouseout', sMouseOut)
+        // .on("mouseover", function(d) {
+        //   d3.select(this).attr("r", 10).style("fill", "darkred"); 
+        //   tip.show(d, this)
+        // })                  
+        // .on("mouseout", function(d) {
+        //   d3.select(this).attr("r", 10).style("fill", "red"); 
+        //   tip.hide(d, this)
+        // });
+        //Change the bar color back to the original color on mouseout events
     },
     [data.length]
   );
