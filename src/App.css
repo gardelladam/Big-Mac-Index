@@ -61,3 +61,12 @@
   padding: 20px;
   flex: 1;
 }
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 2px;
+}
