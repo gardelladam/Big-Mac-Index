@@ -9,9 +9,29 @@ import * as d3 from 'd3';
 
 function renderCountries(countryGeoJson,data,callback,index) {
   const EU_countries = ["AUT","BEL", "CYP", "EST", "FIN", "FRA", "DEU", "GRC", "IRL", "ITA", "LVA", "LTU", "LUX", "MLT", "NLD", "PRT", "SVK", "SVN", "ESP"];
-  console.log(data);
+  var parseTime = d3.timeParse('%Y');
+  const EU_countries2 = [
+    { year: 1998, name: "AUT" },
+    { year: 1998, name: "BEL" },
+    { year: 2008, name: "CYP" },
+    { year: 2011, name: "EST" },
+    { year: 1998, name: "FIN" },
+    { year: 1998, name: "FRA" },
+    { year: 1998, name: "DEU" },
+    { year: 2001, name: "GRC" },
+    { year: 1998, name: "IRL" },
+    { year: 1998, name: "ITA" },
+    { year: 2014, name: "LVA" },
+    { year: 2015, name: "LTU" },
+    { year: 1998, name: "LUX" },
+    { year: 2008, name: "MLT" },
+    { year: 1998, name: "NLD" },
+    { year: 1998, name: "PRT" },
+    { year: 2009, name: "SVK" },
+    { year: 2007, name: "SVN" },
+    { year: 1998, name: "ESP" },
+  ];
   let EU_zone = data.filter(function(d){return d.iso_a3 === "EUZ";})
-  console.log(index);
   const setIso = (parameter) => (event) => {
     if(EU_countries.includes(parameter)){
      callback("EUZ");
@@ -38,10 +58,12 @@ function renderCountries(countryGeoJson,data,callback,index) {
     };
     const countryCode = country.properties.ISO_A3;
     if(EU_countries.includes(countryCode)){
-      console.log(EU_zone[0][index])
+     var test = EU_countries2.find((a) => {
+       return a.name === countryCode;
+      });
+      if(parseTime(test.year) < EU_zone[0]["date"])
+      {
       if(EU_zone[0][index] > 0){
-
-        console.log(index);
         countryStyle = {
           fillColor: "green",
           fillOpacity: EU_zone[0][index],
@@ -57,6 +79,8 @@ function renderCountries(countryGeoJson,data,callback,index) {
           weight: 1,
         };
         }
+      }
+      
     }
     else{
     for(var i = 0; i < data.length; i ++){
@@ -110,7 +134,7 @@ componentWillReceiveProps(nextProps) {
     return (
       <div>
         <h1 style={{ textAlign: "center" }}>{this.props.dataParentToChild}</h1>
-        <MapContainer  style={{ width: "134vh", height: "52vh", background: "transparent"}} zoom={2} zoomControl={false} dragging={!this.state.smallScreen} doubleClickZoom={false} center={[20, 10]}>
+        <MapContainer  style={{ wyearth: "134vh", height: "52vh", background: "transparent"}} zoom={2} zoomControl={false} dragging={!this.state.smallScreen} doubleClickZoom={false} center={[20, 10]}>
         { renderCountries( mapData.features,this.props.data,this.props.parentCallback,this.props.index) }
         </MapContainer>
         
