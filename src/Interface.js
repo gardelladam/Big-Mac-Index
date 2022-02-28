@@ -65,7 +65,6 @@ function Interface(props){
   const handleCallback = (childData) =>{
         setLoadingbar(true);
         setbarchartData(props.data.filter(function(d){return d.iso_a3 === childData;}));
-        //console.log(props.Setdata.filter(function(d){return d.iso_a3 === childData;}));
         setLoadingbar(false);
   }
 
@@ -93,7 +92,7 @@ function Interface(props){
               <div className = "BarChart">
               {loadingbar || barchartData.length === 0
         ? <div/>
-        :  <BarChart data = {barchartData}/>
+        :  <BarChart data = {barchartData} index={composite}/>
       }
               </div>
         </div>

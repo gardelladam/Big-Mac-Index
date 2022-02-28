@@ -8,7 +8,7 @@ import d3Tip from "d3-tip";
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
 
-function BarChart({ data }) {
+function BarChart({ data,index }) {
   const ref = useD3(
     (svg) => {
       const height = 350;
@@ -16,7 +16,7 @@ function BarChart({ data }) {
       const margin = { top: 20, right: 30, bottom: 30, left: 40 };
  //data = data.filter(function(d){return d.iso_a3 === "NOR";})
 
-
+console.log(index);
 var format = d3.timeFormat("%Y-%b");
 var mindate = d3.min(data, (d) => d.date);
 var maxdate =  d3.max(data, (d) => d.date);
@@ -77,9 +77,8 @@ console.log(maxdate);
 
       function sMouseOver(d) {
         d3.select(this).style("fill", function (d) {
-          currentColor = d.USD_raw > 0 ? "blue" : "darkred";
-          console.log(currentColor);
-          currentVal = d.USD_raw;
+          currentColor = d[index] > 0 ? "blue" : "darkred";
+          currentVal = d[index];
           return currentColor;
          });
         tip.show(d, this)
@@ -88,8 +87,7 @@ console.log(maxdate);
       function sMouseOut(d) {
         // currentColor = currentColor == "darkred" ? "red" : "steelblue";
         d3.select(this).style("fill", function (d) {
-          currentColor = d.USD_raw > 0 ? "steelblue" : "red";
-          console.log(currentColor);
+          currentColor = d[index] > 0 ? "steelblue" : "red";
           return currentColor
          });
         tip.hide(d, this)	  
@@ -102,8 +100,7 @@ console.log(maxdate);
         .join("rect")
         .attr("class", "bar")
         .attr("fill", function (d) {
-          console.log(d.USD_raw);
-          if(d.USD_raw > 0){
+          if(d[index] > 0){
             currentColor = "steelblue"
             return currentColor;
           }
@@ -114,8 +111,8 @@ console.log(maxdate);
          })
         .attr("x", (d) => x(d.date))
         .attr("width", x.bandwidth())
-        .attr("y", (d) => y1(Math.max(0, d.USD_raw)))
-        .attr("height", (d) => Math.abs(y1(d.USD_raw) - y1(0)))
+        .attr("y", (d) => y1(Math.max(0, d[index])))
+        .attr("height", (d) => Math.abs(y1(d[index]) - y1(0)))
         .on('mouseover', sMouseOver)
         .on('mouseout', sMouseOut)
         // .on("mouseover", function(d) {
@@ -128,7 +125,7 @@ console.log(maxdate);
         // });
         //Change the bar color back to the original color on mouseout events
     },
-    [data.length]
+    [data.length,index]
   );
 
   return (
