@@ -43,6 +43,7 @@
 }
 
 .Map {
+  overflow: hidden;
   background-color: #bdbab2;
   padding: 20px;
   flex: 8;

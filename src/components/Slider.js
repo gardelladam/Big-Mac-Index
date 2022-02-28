@@ -9,17 +9,9 @@ function ToggleSlider(props) {
 
 
     const [value, setValue] = React.useState(30);
-
-    const [stateDebounceCallHttpRequest] = React.useState(() =>
-    debounce(props.callback, 300, {
-      leading: false,
-      trailing: true
-    })
-  );
-
     const handleChange = (event, newValue) => {
       setValue(newValue);
-      stateDebounceCallHttpRequest(props.dates[newValue]);
+      props.callback(props.dates[newValue]);
       //console.log(data.filter(function(d){return d.date.getTime() === parseTime(dates[value]).getTime()}));
       //setData(data.filter(function(d){return d.date.getTime() === parseTime(dates[value]).getTime()}));
     };

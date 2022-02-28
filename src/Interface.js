@@ -1,104 +1,66 @@
 import React, { Component, useState,useCallback, useEffect } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styled from 'styled-components';
 import * as d3 from 'd3';
 import importedData from './Data/big-mac-full-index.csv'
-import Slider from '@material-ui/core/Slider';
 import BarChart from './BarChart.js';
 import MyMap from './components/MyMap.js';
 import ToggleSlider from './components/Slider.js';
-import debounce from 'lodash.debounce';
-
-const Button = styled.button`
-  background-color: white;
-  color: black;
-  font-size: 15px;
-  padding: 10px 30px;
-  border-radius: 5px;
-  margin: 10px 0px;
-  cursor: pointer;
-`;
-const ButtonToggle = styled(Button)`
-  opacity: 0.6;
-  ${({ active }) =>
-    active &&
-    `
-    opacity: 1;
-  `}
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-
-function ToggleGroupedButtons() {
-  const type_index = ['Raw index', 'Adjusted index'];
-  const [active, setActive] = useState(type_index[0]);
-  return (
-    <ButtonGroup>
-      {type_index.map(type => (
-        <ButtonToggle
-          key={type}
-          active={active === type}
-          onClick = {() => setActive(type)}
-        > 
-          {type}
-        </ButtonToggle>
-      ))}
-    </ButtonGroup>
-  );
-}
-
-function ToggleDropDown() {
-  const type_currency = ['HKG', 'US', 'Euro', 'Yen'];
-  return (
-    <form> 
-      <select id = "myList">
-      {type_currency.map(type => (
-        <option
-          key = {type}
-          value = {type}
-          onClick={() => console.log(type)}
-        >
-          {type}
-        </option>
-      ))}
-      </select>  
-    </form> );
-}
-
-
-
-// function MyForm() {
-//   return (
-//     <form>
-//         <input type="text" 
-//         placeholder='Search for country'
-//         // value={country}
-//         // onChange={(e) => setName(e.target.value)}
-//         />
-//     </form>
-//   )
-// }
+import ToggleGroupedButtons from './components/ToggleButtons.js';
+import ToggleDropDown from './components/ToggleDrop.js'
 
 function Interface(props){
-
+  var parseTime = d3.timeParse('%Y-%m-%d');
     const [barchartData, setbarchartData] = React.useState([]);
     const [loadingbar, setLoadingbar] = React.useState(true);
     const [loading, setLoading] = React.useState(true);
-    const [mapData, setMapData] = React.useState([]);
-    
+    const [mapData, setMapData] = React.useState(props.data.filter(function(k){return k.date.getTime() === parseTime("2019-07-09").getTime()}));
+    const [index, setIndex] = React.useState("_raw");
+    const [currency, setCurrency] = React.useState("USD");
+    const [composite, setComposite] = React.useState("USD_raw");
     const handleCallbackSlider = (childData) =>
     {
-      setLoading(true);
       var parseTime = d3.timeParse('%Y-%m-%d');
-      console.log(props.data.filter(function(d){return d.date.getTime() === parseTime(childData).getTime()}));
       setMapData(props.data.filter(function(d){return d.date.getTime() === parseTime(childData).getTime()}));
-      setLoading(false);
      }
+
+     const handleCallbackToggle = (childData) =>
+     {
+      console.log(childData);
+      if(childData === "Raw index")
+      {
+        setIndex("_raw")
+        setComposite(currency+"_raw");
+      }
+      else{
+        setIndex("_adjusted");
+        setComposite(currency+"_adjusted");
+      }
+      }
+
+      const handleCallbackToggleDrop = (childData) =>
+      {
+       console.log(childData);
+       if(childData === "US dollar")
+       {
+        setCurrency("USD")
+        setComposite("USD"+index);
+       }
+       else if(childData === "British Pound"){
+        setCurrency("GBP");
+        setComposite("GBP"+index);
+       }
+       else if(childData === "Euro"){
+        setCurrency("EUR");
+        setComposite("EUR"+index);
+       }else if(childData === "Japanese Yen"){
+        setCurrency("JPY");
+        setComposite("JPY"+index);
+       }else {
+        setCurrency("CNY");
+        setComposite("CNY"+index);
+       }
+       }
 
   const handleCallback = (childData) =>{
         setLoadingbar(true);
@@ -108,17 +70,8 @@ function Interface(props){
   }
 
    React.useEffect(() => { 
-    d3.csv(importedData).then((d) => {
-      setMapData(d);
       setLoading(false);
-    });
-    
   }, []);
-
-
-
-
-
 
   return (
         <div className = "Context" fluid = {"true"}>
@@ -126,13 +79,13 @@ function Interface(props){
                 <div className = "Map">
                 {loading
         ? <div/>
-        : <MyMap data = {mapData} parentCallback = {handleCallback}/>
+        : <MyMap data = {mapData} parentCallback = {handleCallback} index={composite}/>
       }
                 </div>
                 <div className = "Dashboard">
                   2
-                  <ToggleGroupedButtons/> 
-                  <ToggleDropDown/>
+                  <ToggleGroupedButtons callback={handleCallbackToggle}/> 
+                  <ToggleDropDown callback={handleCallbackToggleDrop}/>
                   <ToggleSlider dates={props.dates} callback={handleCallbackSlider}/>
                   {/* <MyForm/> */}
                 </div>
