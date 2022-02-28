@@ -5,73 +5,113 @@ import "leaflet/dist/leaflet.css";
 import * as d3 from 'd3';
 
 
-class MyMap extends Component {
-  state = { color: "#ffff00", data1: []};
 
-  colors = ["green", "blue", "yellow", "orange", "grey"];
 
-  componentDidMount() {
-
-  }
-
-  countryStyle = {
-    fillColor: "grey",
-    fillOpacity: 1,
-    color: "black",
-    weight: 1,
+function renderCountries(countryGeoJson,data,callback,index) {
+  const EU_countries = ["AUT","BEL", "CYP", "EST", "FIN", "FRA", "DEU", "GRC", "IRL", "ITA", "LVA", "LTU", "LUX", "MLT", "NLD", "PRT", "SVK", "SVN", "ESP"];
+  console.log(data);
+  let EU_zone = data.filter(function(d){return d.iso_a3 === "EUZ";})
+  console.log(index);
+  const setIso = (parameter) => (event) => {
+    if(EU_countries.includes(parameter)){
+     callback("EUZ");
+    }
+    else{
+    callback(parameter);
+    }
   };
-
-  setIso = (parameter) => (event) => {
-    this.props.parentCallback(parameter);
-  };
-
-
-  onEachCountry = (country, layer) => {
-    
-    const countryName = country.properties.ADMIN;
+  const onEachCountry = (country, layer) => {
     const countryCode = country.properties.ISO_A3;
-    //console.log(countryName);
-    layer.bindPopup(countryName);
+    const countryName = country.properties.ADMIN;
+    layer.bindPopup(countryName + EU_zone[0][index]);
+    layer.on({
+      click: setIso(countryCode),
+    });
+  };
 
-    for(var i = 0; i < this.props.data.length; i ++){
-      if(this.props.data[i].iso_a3 == countryCode){
-        if(this.props.data[i].USD_raw > 0){
-          layer.options.fillColor = "green";
-          layer.options.fillOpacity = this.props.data[i].USD_raw;
+  return countryGeoJson.map(country => {
+    let countryStyle = {
+      fillColor: "grey",
+      fillOpacity: 1,
+      color: "black",
+      weight: 1,
+    };
+    const countryCode = country.properties.ISO_A3;
+    if(EU_countries.includes(countryCode)){
+      console.log(EU_zone[0][index])
+      if(EU_zone[0][index] > 0){
+
+        console.log(index);
+        countryStyle = {
+          fillColor: "green",
+          fillOpacity: EU_zone[0][index],
+          color: "black",
+          weight: 1,
+        };
+      }
+      else if(EU_zone[0][index] < 0){
+        countryStyle = {
+          fillColor: "red",
+          fillOpacity: -EU_zone[0][index],
+          color: "black",
+          weight: 1,
+        };
         }
-        else if(this.props.data[i].USD_raw < 0){
-          layer.options.fillColor = "red";
-          layer.options.fillOpacity = -this.props.data[i].USD_raw;
+    }
+    else{
+    for(var i = 0; i < data.length; i ++){
+      if(data[i].iso_a3 === countryCode){
+        if(data[i][index] > 0){
+          countryStyle = {
+            fillColor: "green",
+            fillOpacity: data[i][index],
+            color: "black",
+            weight: 1,
+          };
         }
-        else{
-         
-          layer.options.fillOpacity = 0;
+        else if(data[i][index] < 0){
+          countryStyle = {
+            fillColor: "red",
+            fillOpacity: -data[i][index],
+            color: "black",
+            weight: 1,
+          };
         }
         
       }
     } 
+  }
+    return (
+      <GeoJSON key={country.properties.ADMIN}  style={countryStyle}
+      data={country}
+      onEachFeature={onEachCountry}
 
-    //layer.options.fillOpacity = Math.random(); //0-1 (0.1, 0.2, 0.3)
-    // const colorIndex = Math.floor(Math.random() * this.colors.length);
-    // layer.options.fillColor = this.colors[colorIndex]; //0
+       />
+    );
+  });
+}
+class MyMap extends Component {
 
-    layer.on({
-  
-      click: this.setIso(countryCode),
-    });
-  };
+  constructor(props){
+    super(props);
+    this.state = {
+        data4: this.props.data,
+        name: this.props.dataParentToChild
+    }
+}
 
+componentWillReceiveProps(nextProps) {
+  this.setState({ data: nextProps.data,   name: nextProps.dataParentToChild });  
+}
+  state = { color: "#ffff00", data1: []};
+  colors = ["green", "blue", "yellow", "orange", "grey"];
 
   render() {
     return (
       <div>
-        <h1 style={{ textAlign: "center" }}>My Map</h1>
+        <h1 style={{ textAlign: "center" }}>{this.props.dataParentToChild}</h1>
         <MapContainer  style={{ width: "134vh", height: "52vh", background: "transparent"}} zoom={2} zoomControl={false} dragging={!this.state.smallScreen} doubleClickZoom={false} center={[20, 10]}>
-          <GeoJSON
-            style={this.countryStyle}
-            data={mapData.features}
-            onEachFeature={this.onEachCountry}
-          />
+        { renderCountries( mapData.features,this.props.data,this.props.parentCallback,this.props.index) }
         </MapContainer>
         
       </div>

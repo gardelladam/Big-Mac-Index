@@ -8,10 +8,30 @@ import MyMap from './components/MyMap.js';
 
 function App() {
 
+  const [data, setData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [dates, setDates] = React.useState([]);
+  
+  React.useEffect(() => { 
+    var parseTime = d3.timeParse('%Y-%m-%d');
+    d3.csv(importedData).then((d) => {
+      setDates(Array.from(new Set(d.map((d) => d.date))))
+      d.forEach(function (d) {
+        d.date = parseTime(d.date);	
+      });
+      setData(d);
+      setLoading(false);
+    });
+  }, []);
 
   return (
- 
-   <Interface/>
+ <div>
+    {loading
+        ? <div/>
+        : <Interface data={data} dates={dates}/>
+      }
+ </div>
+
     )
 }
 
