@@ -1,14 +1,17 @@
-import React, { Component } from "react";
+import React, {useState, Component } from "react";
 import { MapContainer, GeoJSON } from "react-leaflet";
 import mapData from "../Data/countries.json";
 import "leaflet/dist/leaflet.css";
 import * as d3 from 'd3';
+import Legend from "./Legend.js"
 
 
 
 
 function renderCountries(countryGeoJson,data,callback,index) {
+  
   const EU_countries = ["AUT","BEL", "CYP", "EST", "FIN", "FRA", "DEU", "GRC", "IRL", "ITA", "LVA", "LTU", "LUX", "MLT", "NLD", "PRT", "SVK", "SVN", "ESP"];
+
   var parseTime = d3.timeParse('%Y');
   const EU_countries2 = [
     { year: 1998, name: "AUT" },
@@ -31,6 +34,7 @@ function renderCountries(countryGeoJson,data,callback,index) {
     { year: 2007, name: "SVN" },
     { year: 1998, name: "ESP" },
   ];
+
   let EU_zone = data.filter(function(d){return d.iso_a3 === "EUZ";})
   const setIso = (parameter) => (event) => {
     if(EU_countries.includes(parameter)){
@@ -114,33 +118,21 @@ function renderCountries(countryGeoJson,data,callback,index) {
     );
   });
 }
-class MyMap extends Component {
-
-  constructor(props){
-    super(props);
-    this.state = {
-        data4: this.props.data,
-        name: this.props.dataParentToChild
-    }
-}
-
-componentWillReceiveProps(nextProps) {
-  this.setState({ data: nextProps.data,   name: nextProps.dataParentToChild });  
-}
-  state = { color: "#ffff00", data1: []};
-  colors = ["green", "blue", "yellow", "orange", "grey"];
-
-  render() {
+const MyMap = (props) => {
+  const [map, setMap] = useState(null);
+   
     return (
       <div>
-        <h1 style={{ textAlign: "center" }}>{this.props.dataParentToChild}</h1>
-        <MapContainer  style={{ wyearth: "134vh", height: "52vh", background: "transparent"}} zoom={2} zoomControl={false} dragging={!this.state.smallScreen} doubleClickZoom={false} center={[20, 10]}>
-        { renderCountries( mapData.features,this.props.data,this.props.parentCallback,this.props.index) }
+        <h1 style={{ textAlign: "center" }}>{props.dataParentToChild}</h1>
+        <MapContainer  style={{ width: "134vh", height: "52vh", background: "transparent"}} zoom={2} zoomControl={false} doubleClickZoom={false} center={[20, 10]} whenCreated={setMap}>
+        { renderCountries( mapData.features,props.data,props.parentCallback,props.index) }
+         <Legend map={map} />
+
         </MapContainer>
         
       </div>
     );
-  }
+  
 }
 
 export default MyMap;
