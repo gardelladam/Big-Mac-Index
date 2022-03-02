@@ -8,7 +8,7 @@ import d3Tip from "d3-tip";
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
 
-function BarChart({ data,index }) {
+function BarChart({ data,index,currentDate }) {
   const ref = useD3(
     (svg) => {
       const height = 350;
@@ -20,10 +20,10 @@ console.log(index);
 var format = d3.timeFormat("%Y-%b");
 var mindate = d3.min(data, (d) => d.date);
 var maxdate =  d3.max(data, (d) => d.date);
+var minproc = d3.min(data, (d) => +d[index]);
+var maxproc =  d3.max(data, (d) => +d[index]);
 var currentColor;
 var currentVal;
-console.log(mindate);
-console.log(maxdate);
       const x = d3
         .scaleBand()
         .domain(data.map((d) => d.date))
@@ -32,7 +32,7 @@ console.log(maxdate);
 
       const y1 = d3
         .scaleLinear()
-        .domain([-1, 1])
+        .domain([minproc < 0 ? minproc*100-5:0 , maxproc > 0 ? maxproc*100+5:0])
         .rangeRound([height - margin.bottom, margin.top]);
 
         const xAxis = g => g
@@ -70,16 +70,15 @@ console.log(maxdate);
         .attr('class', 'd3-tip')
         .offset([-50, 0])
         .html(function(d) {
-          return "<strong>Value:</strong> <span style='color:red'>" + currentVal + "</span>";
+          return "<strong>Value:</strong> <span style='color:red'>" + (currentVal*100).toFixed(2)+ " %"  + "</span>";
         })
 
         svg.call(tip);
 
       function sMouseOver(d) {
         d3.select(this).style("fill", function (d) {
-          currentColor = d[index] > 0 ? "blue" : "darkred";
           currentVal = d[index];
-          return currentColor;
+          return d[index] > 0 ? "blue" : "darkred";
          });
         tip.show(d, this)
       };
@@ -87,8 +86,7 @@ console.log(maxdate);
       function sMouseOut(d) {
         // currentColor = currentColor == "darkred" ? "red" : "steelblue";
         d3.select(this).style("fill", function (d) {
-          currentColor = d[index] > 0 ? "steelblue" : "red";
-          return currentColor
+          return  d[index] > 0 ? "steelblue" : "red"
          });
         tip.hide(d, this)	  
       };
@@ -99,20 +97,16 @@ console.log(maxdate);
         .data(data)
         .join("rect")
         .attr("class", "bar")
+        .attr("style",function (d) {
+          return d.date.getTime() === currentDate.getTime() ? "outline: medium solid black;" : ""
+         })
         .attr("fill", function (d) {
-          if(d[index] > 0){
-            currentColor = "steelblue"
-            return currentColor;
-          }
-          else{
-            currentColor = "red"
-            return currentColor;
-          }
+          return d[index] > 0 ? "steelblue" : "red"
          })
         .attr("x", (d) => x(d.date))
         .attr("width", x.bandwidth())
-        .attr("y", (d) => y1(Math.max(0, d[index])))
-        .attr("height", (d) => Math.abs(y1(d[index]) - y1(0)))
+        .attr("y", (d) => y1(Math.max(0, d[index]*100)))
+        .attr("height", (d) => Math.abs(y1(d[index]*100) - y1(0)))
         .on('mouseover', sMouseOver)
         .on('mouseout', sMouseOut)
         // .on("mouseover", function(d) {
@@ -125,7 +119,7 @@ console.log(maxdate);
         // });
         //Change the bar color back to the original color on mouseout events
     },
-    [data.length,index]
+    [data.length,index,currentDate]
   );
 
   return (

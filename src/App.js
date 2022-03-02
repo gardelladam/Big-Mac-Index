@@ -5,7 +5,7 @@ import importedData from './Data/big-mac-full-index.csv'
 import Interface from './Interface.js';
 import BarChart from './BarChart.js';
 import MyMap from './components/MyMap.js';
-
+const Card = (date, label) => { return { date: date, label: label } }
 function App() {
 
   const [data, setData] = React.useState([]);
@@ -16,6 +16,11 @@ function App() {
     var parseTime = d3.timeParse('%Y-%m-%d');
     d3.csv(importedData).then((d) => {
       setDates(Array.from(new Set(d.map((d) => d.date))))
+      let cardTwo = [];
+      Array.from(new Set(d.map((d) => d.date))).map((d) => {
+        cardTwo.push(Card(d, 'd.date'));
+      })
+      setDates(cardTwo)
       d.forEach(function (d) {
         d.date = parseTime(d.date);	
       });
