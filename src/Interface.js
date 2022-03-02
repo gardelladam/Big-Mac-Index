@@ -7,7 +7,8 @@ import BarChart from './BarChart.js';
 import MyMap from './components/MyMap.js';
 import ToggleSlider from './components/Slider.js';
 import ToggleGroupedButtons from './components/ToggleButtons.js';
-import ToggleDropDown from './components/ToggleDrop.js'
+import ToggleDropDown from './components/ToggleDrop.js';
+import CountryInfo from './components/CountryInfo.js';
 
 function Interface(props){
   var parseTime = d3.timeParse('%Y-%m-%d');
@@ -18,10 +19,13 @@ function Interface(props){
     const [index, setIndex] = React.useState("_raw");
     const [currency, setCurrency] = React.useState("USD");
     const [composite, setComposite] = React.useState("USD_raw");
+    const [date, setDate] = React.useState(parseTime("2019-07-09"));
     const handleCallbackSlider = (childData) =>
     {
       var parseTime = d3.timeParse('%Y-%m-%d');
       setMapData(props.data.filter(function(d){return d.date.getTime() === parseTime(childData).getTime()}));
+      setDate(parseTime(childData));
+
      }
 
      const handleCallbackToggle = (childData) =>
@@ -83,6 +87,7 @@ function Interface(props){
                 </div>
                 <div className = "Dashboard">
                   2
+                  <CountryInfo date={date} country={barchartData} index={composite} currency={currency}/>
                   <ToggleGroupedButtons callback={handleCallbackToggle}/> 
                   <ToggleDropDown callback={handleCallbackToggleDrop}/>
                   <ToggleSlider dates={props.dates} callback={handleCallbackSlider}/>
@@ -92,7 +97,7 @@ function Interface(props){
               <div className = "BarChart">
               {loadingbar || barchartData.length === 0
         ? <div/>
-        :  <BarChart data = {barchartData} index={composite}/>
+        :  <BarChart data = {barchartData} index={composite} currentDate={date}/>
       }
               </div>
         </div>
