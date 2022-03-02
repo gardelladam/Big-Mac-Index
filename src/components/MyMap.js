@@ -7,6 +7,22 @@ import Legend from "./Legend.js"
 
 
 
+function getColor(d) {
+    return d > 1    ? '#053061' :
+        d > 0.7    ? '#2166ac' :
+        d > 0.5    ? '#4393c3' :
+        d > 0.3    ? '#92c5de' :
+        d > 0.1    ? '#d1e5f0' :
+        d > 0.01    ? '#f7f7f7' :
+        d > -0.01   ? '#f7f7f7' :
+        d > -0.1   ? '#f7f7f7' :     
+        d > -0.3   ? '#fddbc7' :
+        d > -0.5   ? '#f4a582' :
+        d > -0.7   ? '#d6604d' :
+        d > -1   ? '#b2182b' :
+                     '#67001f';
+                    
+}
 
 function renderCountries(countryGeoJson,data,callback,index) {
   
@@ -67,45 +83,25 @@ function renderCountries(countryGeoJson,data,callback,index) {
       });
       if(parseTime(test.year) < EU_zone[0]["date"])
       {
-      if(EU_zone[0][index] > 0){
         countryStyle = {
-          fillColor: "green",
-          fillOpacity: EU_zone[0][index],
+          fillColor: getColor(EU_zone[0][index]),
+          fillOpacity: 1,
           color: "black",
           weight: 1,
         };
-      }
-      else if(EU_zone[0][index] < 0){
-        countryStyle = {
-          fillColor: "red",
-          fillOpacity: -EU_zone[0][index],
-          color: "black",
-          weight: 1,
-        };
-        }
       }
       
     }
     else{
     for(var i = 0; i < data.length; i ++){
       if(data[i].iso_a3 === countryCode){
-        if(data[i][index] > 0){
+      
           countryStyle = {
-            fillColor: "green",
-            fillOpacity: data[i][index],
+            fillColor:getColor(data[i][index]),
+            fillOpacity: 1,
             color: "black",
             weight: 1,
-          };
-        }
-        else if(data[i][index] < 0){
-          countryStyle = {
-            fillColor: "red",
-            fillOpacity: -data[i][index],
-            color: "black",
-            weight: 1,
-          };
-        }
-        
+          };   
       }
     } 
   }
