@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import '../App.css';
 import styled from 'styled-components';
 const Button = styled.button`
-  background-color: white;
+  background-color: #bab9be;
   color: black;
   font-size: 15px;
   padding: 10px 30px;

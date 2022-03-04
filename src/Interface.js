@@ -86,11 +86,14 @@ function Interface(props){
       }
                 </div>
                 <div className = "Dashboard">
-                  2
                   <CountryInfo date={date} country={barchartData} index={composite} currency={currency}/>
-                  <ToggleGroupedButtons callback={handleCallbackToggle}/> 
-                  <ToggleDropDown callback={handleCallbackToggleDrop}/>
-                  <ToggleSlider dates={props.dates} callback={handleCallbackSlider}/>
+                  <div className = "infoBox">
+                    <h3>Map controls</h3>
+                    <ToggleGroupedButtons callback={handleCallbackToggle}/> 
+                    <ToggleDropDown callback={handleCallbackToggleDrop}/>
+                    <ToggleSlider dates={props.dates} callback={handleCallbackSlider}/>
+                  </div>
+                  
                   {/* <MyForm/> */}
                 </div>
               </div>

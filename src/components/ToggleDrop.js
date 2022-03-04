@@ -7,6 +7,7 @@ function ToggleDropDown(props) {
         return;
       }
     return (
+    <div className = "dropdown">
       <form> 
         <select id = "myList" onChange={parseSelected}>
         {type_currency.map(type => (
@@ -18,6 +19,7 @@ function ToggleDropDown(props) {
           </option>
         ))}
         </select>  
-      </form> );
+      </form> 
+    </div>);
   }
   export default ToggleDropDown

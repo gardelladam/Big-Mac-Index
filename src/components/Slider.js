@@ -57,8 +57,8 @@ function ToggleSlider(props) {
     return(
     <div className="slider-parent">
      <IOSSlider size="large" value={value} min={0} max={props.dates.length-1} marks={true} onChangeCommitted={handleOnChangeCommited} onChange={handleChange} aria-labelledby="continuous-slider"/>
-    <div className="buble"> 
-    {props.dates[value].date}
+    <div className="Row"> 
+    <strong>Date of data:&nbsp;</strong> <p>{props.dates[value].date}</p>
     </div>
   </div>);
   }

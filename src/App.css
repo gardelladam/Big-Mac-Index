@@ -7,28 +7,6 @@
   justify-content: center;
 }
 
-/* .App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-} */
-
 .Context {
   background-color: #171d2b;
   height: 100vh;
@@ -44,20 +22,20 @@
 
 .Map {
   overflow: hidden;
-  background-color: #b3b2bd;
+  background-color: #d6d5dd;
   padding: 20px;
   flex: 8;
 }
 
 .Dashboard {
-  background-color: #95e2ac;
+  background-color: #d6d5dd;
   padding: 20px;
   flex: 3;
   flex-direction: column;
 }
 
 .BarChart {
-  background-color: #e9a7d8;
+  background-color: #d6d5dd;
   height: 40%;
   padding: 20px;
   flex: 1;
@@ -81,6 +59,21 @@
   padding: 10px 30px;
   border-radius: 5px;
   margin: 10px 0px;
-  align-items: center;
   justify-content: center;
+}
+
+.dropdown {
+  text-align: center;
+}
+
+select {
+  background-color: #bab9be;
+  /* border: black; */
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 90%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  /* line-height: inherit; */
 }
