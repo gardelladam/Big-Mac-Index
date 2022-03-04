@@ -13,9 +13,8 @@ function getColor(d) {
         d > 0.5    ? '#4393c3' :
         d > 0.3    ? '#92c5de' :
         d > 0.1    ? '#d1e5f0' :
-        d > 0.01    ? '#f7f7f7' :
-        d > -0.01   ? '#f7f7f7' :
-        d > -0.1   ? '#f7f7f7' :     
+        d > 0.0001    ? '#E0E9ED' :
+        d > -0.1   ? '#fff0e8' :     
         d > -0.3   ? '#fddbc7' :
         d > -0.5   ? '#f4a582' :
         d > -0.7   ? '#d6604d' :
@@ -63,7 +62,7 @@ function renderCountries(countryGeoJson,data,callback,index) {
   const onEachCountry = (country, layer) => {
     const countryCode = country.properties.ISO_A3;
     const countryName = country.properties.ADMIN;
-    layer.bindPopup(countryName + EU_zone[0][index]);
+    //layer.bindPopup(countryName + EU_zone[0][index]);
     layer.on({
       click: setIso(countryCode),
     });
@@ -83,25 +82,69 @@ function renderCountries(countryGeoJson,data,callback,index) {
       });
       if(parseTime(test.year) < EU_zone[0]["date"])
       {
+        if(EU_zone[0][index]*1 !== 0){
         countryStyle = {
           fillColor: getColor(EU_zone[0][index]),
           fillOpacity: 1,
           color: "black",
           weight: 1,
         };
+      } 
+      if(index === "EUR_raw" || index === "EUR_adjusted"){
+        countryStyle = {
+          fillColor: "white",
+          fillOpacity: 1,
+          color: "#009900",
+          weight: 1.5,
+        };
+      }
       }
       
     }
     else{
     for(var i = 0; i < data.length; i ++){
       if(data[i].iso_a3 === countryCode){
-      
-          countryStyle = {
+        console.log(data[i][index])
+        if(data[i][index]*1 !== 0){
+        countryStyle = {
             fillColor:getColor(data[i][index]),
             fillOpacity: 1,
             color: "black",
             weight: 1,
           };   
+        }
+        if( countryCode === "USA" && (index === "USD_raw" || index === "USD_adjusted")){
+        countryStyle = {
+          fillColor: "white",
+          fillOpacity: 1,
+          color: "#009900",
+          weight: 1.5,
+        };
+      }
+      if( countryCode === "CHN" && (index === "CNY_raw" || index === "CNY_adjusted")){
+        countryStyle = {
+          fillColor: "white",
+          fillOpacity: 1,
+          color: "#009900",
+          weight: 1.5,
+        };
+      }
+      if( countryCode === "JPN" && (index === "JPY_raw" || index === "JPY_adjusted")){
+        countryStyle = {
+          fillColor: "white",
+          fillOpacity: 1,
+          color: "#009900",
+          weight: 1.5,
+        };
+      }
+      if( countryCode === "GBR" && (index === "GBP_raw" || index === "GBP_adjusted")){
+        countryStyle = {
+          fillColor: "white",
+          fillOpacity: 1,
+          color: "#009900",
+          weight: 1.5,
+        };
+      }
       }
     } 
   }

@@ -7,7 +7,21 @@ import { select, mouse } from 'd3-selection';
 import d3Tip from "d3-tip";
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
-
+function getColor(d) {
+  return d > 1    ? '#053061' :
+  d > 0.7    ? '#2166ac' :
+  d > 0.5    ? '#4393c3' :
+  d > 0.3    ? '#92c5de' :
+  d > 0.1    ? '#d1e5f0' :
+  d > 0.0001    ? '#E0E9ED' :
+  d > -0.1   ? '#fff0e8' :     
+  d > -0.3   ? '#fddbc7' :
+  d > -0.5   ? '#f4a582' :
+  d > -0.7   ? '#d6604d' :
+  d > -1   ? '#b2182b' :
+               '#67001f';
+                  
+}
 function BarChart({ data,index,currentDate }) {
   const ref = useD3(
     (svg) => {
@@ -70,7 +84,7 @@ var currentVal;
         .attr('class', 'd3-tip')
         .offset([-50, 0])
         .html(function(d) {
-          return "<strong>Value:</strong> <span style='color:red'>" + (currentVal*100).toFixed(2)+ " %"  + "</span>";
+          return  "<strong>Value:</strong> <span style='color:white'>" + (currentVal*100).toFixed(2)+ " %"  + "</span>";
         })
 
         svg.call(tip);
@@ -78,7 +92,7 @@ var currentVal;
       function sMouseOver(d) {
         d3.select(this).style("fill", function (d) {
           currentVal = d[index];
-          return d[index] > 0 ? "blue" : "darkred";
+          return d[index] > 0 ? "darkblue" : "darkred";
          });
         tip.show(d, this)
       };
@@ -86,7 +100,7 @@ var currentVal;
       function sMouseOut(d) {
         // currentColor = currentColor == "darkred" ? "red" : "steelblue";
         d3.select(this).style("fill", function (d) {
-          return  d[index] > 0 ? "steelblue" : "red"
+          return  getColor(d[index])
          });
         tip.hide(d, this)	  
       };
@@ -98,10 +112,10 @@ var currentVal;
         .join("rect")
         .attr("class", "bar")
         .attr("style",function (d) {
-          return d.date.getTime() === currentDate.getTime() ? "outline: medium solid black;" : ""
+          return d.date.getTime() === currentDate.getTime() ?  "outline: 2px solid black;" : ""
          })
         .attr("fill", function (d) {
-          return d[index] > 0 ? "steelblue" : "red"
+          return getColor(d[index])
          })
         .attr("x", (d) => x(d.date))
         .attr("width", x.bandwidth())

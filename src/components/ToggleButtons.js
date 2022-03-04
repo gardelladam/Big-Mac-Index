@@ -21,7 +21,7 @@ const ButtonToggle = styled(Button)`
 
 const ButtonGroup = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: left;
 `;
 
 function ToggleGroupedButtons(props) {

@@ -89,11 +89,18 @@ function Interface(props){
                   <CountryInfo date={date} country={barchartData} index={composite} currency={currency}/>
                   <div className = "infoBox">
                     <h3>Map controls</h3>
+                    <p style={{marginBottom: 4}}><b>Index</b></p>
                     <ToggleGroupedButtons callback={handleCallbackToggle}/> 
+                    <p style={{marginBottom: 8}}><b>Base currency</b></p>
                     <ToggleDropDown callback={handleCallbackToggleDrop}/>
                     <ToggleSlider dates={props.dates} callback={handleCallbackSlider}/>
                   </div>
-                  
+                  <div className = "infoBox">
+                    <div className = "Row">                    
+                    <p>To learn more about the Big Mac Index visit:&nbsp;</p>
+                    <a href="https://www.economist.com/big-mac-index">The Economist</a>
+                    </div>
+                  </div>
                   {/* <MyForm/> */}
                 </div>
               </div>
